@@ -36,7 +36,7 @@ Read-only commands and local tests do not require a wallet.
 ## Install
 
 ```bash
-git clone <your-github-repo-url>
+git clone https://github.com/comzzy-comzzy/oraclebazaar.git
 cd oraclebazaar
 npm install
 cp .env.example .env
@@ -86,7 +86,42 @@ npm run check
 
 This runs TypeScript checks, unit tests, and a production build.
 
-### 2. Start the local demo seller
+### 2. Use a real x402 seller endpoint
+
+OracleBazaar is built for real x402 paid APIs. The normal flow uses an actual seller endpoint that returns HTTP `402 Payment Required`, then your x402 wallet or facilitator creates the payment header used by `buy-signal`.
+
+Set the seller endpoint you want to buy from:
+
+```bash
+export ORACLEBAZAAR_SELLER_URL=https://your-real-x402-seller.example/x402/risk
+```
+
+Probe the real x402 price:
+
+```bash
+npm run dev -- probe-signal \
+  --url "$ORACLEBAZAAR_SELLER_URL" \
+  --query examples/rwa-risk-query.json
+```
+
+After your x402 wallet/facilitator creates the real payment header, buy the signal:
+
+```bash
+npm run dev -- buy-signal \
+  --url "$ORACLEBAZAAR_SELLER_URL" \
+  --query examples/rwa-risk-query.json \
+  --network pharos-testnet \
+  --provider "RWA Risk Agent" \
+  --payment-header "$X402_PAYMENT_HEADER" \
+  --sign \
+  --out signal.json
+```
+
+Use `--network pharos-mainnet` for mainnet once you are ready to anchor production attestations.
+
+### 3. Optional local demo seller
+
+The mock seller is only for local demos and CI-style testing when you do not have funded x402 credentials available. It is not the production payment path.
 
 Open terminal 1:
 
@@ -100,7 +135,7 @@ The mock seller listens at:
 http://127.0.0.1:8787/x402/risk
 ```
 
-### 3. Probe the x402 price
+### 4. Probe the local demo price
 
 Open terminal 2:
 
@@ -112,7 +147,7 @@ npm run dev -- probe-signal \
 
 You should see a `payment_required` style response with a demo quote.
 
-### 4. Buy a demo signal
+### 5. Buy a local demo signal
 
 The mock seller accepts any payment header so you can test the skill locally:
 
@@ -126,7 +161,7 @@ npm run dev -- buy-signal \
   --out signal.json
 ```
 
-### 5. Sign the signal
+### 6. Sign the local demo signal
 
 Add a test private key to `.env`, then run:
 
@@ -141,7 +176,7 @@ npm run dev -- buy-signal \
   --out signal.json
 ```
 
-### 6. Verify the signal
+### 7. Verify the signal
 
 ```bash
 npm run dev -- verify-signal --file signal.json
@@ -234,15 +269,33 @@ Publish this JSON to IPFS, Arweave, GitHub, or your own HTTPS endpoint. Use that
 
 ## Real x402 Integration
 
+Real x402 is the intended OracleBazaar mode. The mock seller exists only so reviewers can test the command interface without spending funds.
+
 For a real seller endpoint:
 
 1. `probe-signal` sends the signal request.
 2. The seller returns HTTP `402 Payment Required`.
-3. Your x402 wallet/facilitator creates a payment header.
+3. Your x402 wallet/facilitator creates a real payment header for that quote.
 4. `buy-signal` sends that header through `--payment-header`.
 5. The seller returns the paid signal response.
+6. `verify-signal` verifies the signature and digest.
+7. `publish-attestation` anchors the signal hash on Pharos testnet or mainnet.
 
-The local mock seller skips real settlement so judges can test the skill without funded accounts.
+Example real x402 purchase:
+
+```bash
+export ORACLEBAZAAR_SELLER_URL=https://your-real-x402-seller.example/x402/risk
+export X402_PAYMENT_HEADER=your-wallet-generated-x402-payment-header
+
+npm run dev -- buy-signal \
+  --url "$ORACLEBAZAAR_SELLER_URL" \
+  --query examples/rwa-risk-query.json \
+  --network pharos-mainnet \
+  --provider "Production RWA Risk Agent" \
+  --payment-header "$X402_PAYMENT_HEADER" \
+  --sign \
+  --out signal.json
+```
 
 ## Project Structure
 
