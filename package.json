@@ -1,0 +1,38 @@
+{
+  "name": "oraclebazaar",
+  "version": "0.1.0",
+  "description": "Agent-to-agent x402 data marketplace skill for Pharos testnet and mainnet.",
+  "type": "module",
+  "bin": {
+    "oraclebazaar": "./dist/cli.js"
+  },
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "dev": "tsx src/cli.ts",
+    "test": "vitest run",
+    "lint": "tsc -p tsconfig.json --noEmit",
+    "check": "npm run lint && npm run test && npm run build"
+  },
+  "keywords": [
+    "pharos",
+    "x402",
+    "agent",
+    "oracle",
+    "marketplace",
+    "skill"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "commander": "^12.1.0",
+    "dotenv": "^16.4.7",
+    "ethers": "^6.15.0",
+    "zod": "^3.25.76"
+  },
+  "devDependencies": {
+    "@types/node": "^22.13.14",
+    "tsx": "^4.20.6",
+    "typescript": "^5.8.3",
+    "vitest": "^2.1.9"
+  }
+}

@@ -1,0 +1,12 @@
+{
+  "requestId": "demo-rwa-001",
+  "assetType": "invoice",
+  "assetId": "INV-2026-042",
+  "question": "Estimate default risk, suggested haircut, and confidence for this invoice.",
+  "facts": {
+    "faceValueUsd": 25000,
+    "daysUntilMaturity": 45,
+    "debtorCreditRating": "BBB",
+    "jurisdiction": "US-DE"
+  }
+}
