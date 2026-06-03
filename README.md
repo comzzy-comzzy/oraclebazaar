@@ -43,19 +43,62 @@ cp .env.example .env
 npm run build
 ```
 
-Open `.env` and set the network:
+## Set Up Your `.env` File
+
+The `.env` file stores your local settings. It is created from `.env.example` during install:
 
 ```bash
+cp .env.example .env
+```
+
+Now open it with one of these options.
+
+Option A, easiest terminal editor:
+
+```bash
+nano .env
+```
+
+After editing in `nano`, press `Ctrl + O`, press `Enter`, then press `Ctrl + X`.
+
+Option B, VS Code:
+
+```bash
+code .env
+```
+
+Option C, no editor needed:
+
+```bash
+printf "PHAROS_NETWORK=pharos-testnet\n" > .env
+```
+
+For beginners, start with testnet:
+
+```env
 PHAROS_NETWORK=pharos-testnet
 ```
 
-For live write commands, also set:
+For mainnet later, change it to:
 
-```bash
-PRIVATE_KEY=0xyour_private_key
+```env
+PHAROS_NETWORK=pharos-mainnet
+```
+
+For live write commands such as `register-provider` and `publish-attestation`, add your wallet private key on a new line:
+
+```env
+PHAROS_NETWORK=pharos-testnet
+PRIVATE_KEY=0xyour_private_key_here
 ```
 
 Never commit `.env`. It is ignored by git.
+
+Check that OracleBazaar can read your network setting:
+
+```bash
+npm run dev -- list-networks
+```
 
 ## Supported Pharos Networks
 
