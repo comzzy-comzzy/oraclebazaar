@@ -23,16 +23,42 @@
   ],
   "author": "",
   "license": "MIT",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "agentSkill": {
+    "skillFile": "skills/oraclebazaar/SKILL.md",
+    "compatible": [
+      "claude-code",
+      "codex-cli",
+      "cursor",
+      "vscode-agent",
+      "pharos-agent-center"
+    ],
+    "commands": [
+      "list-networks",
+      "provider-card",
+      "probe-signal",
+      "buy-signal",
+      "verify-signal",
+      "deploy-registry",
+      "register-provider",
+      "publish-attestation"
+    ]
+  },
   "dependencies": {
     "commander": "^12.1.0",
     "dotenv": "^16.4.7",
     "ethers": "^6.15.0",
     "zod": "^3.25.76"
   },
+  "overrides": {
+    "ws": "^8.20.1"
+  },
   "devDependencies": {
     "@types/node": "^22.13.14",
     "tsx": "^4.20.6",
     "typescript": "^5.8.3",
-    "vitest": "^2.1.9"
+    "vitest": "^4.1.8"
   }
 }

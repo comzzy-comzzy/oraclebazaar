@@ -3,6 +3,7 @@ import "dotenv/config";
 import { writeFile } from "node:fs/promises";
 import { Command } from "commander";
 import { ethers } from "ethers";
+import { ZodError } from "zod";
 import { hashJson, signalDigest } from "./hash.js";
 import { printJson, readJsonFile } from "./io.js";
 import { listNetworks, resolveNetwork } from "./networks.js";
@@ -12,6 +13,18 @@ import { createSignal, signSignal, verifySignal } from "./signal.js";
 import { buyX402Signal, probeX402 } from "./x402.js";
 
 const program = new Command();
+
+function printError(error: unknown) {
+  if (error instanceof ZodError) {
+    process.stderr.write(
+      `${JSON.stringify({ success: false, error: "Validation failed.", issues: error.issues }, null, 2)}\n`
+    );
+    return;
+  }
+
+  const message = error instanceof Error ? error.message : String(error);
+  process.stderr.write(`${JSON.stringify({ success: false, error: message }, null, 2)}\n`);
+}
 
 program
   .name("oraclebazaar")
@@ -184,7 +197,10 @@ program
     );
   });
 
+program.showHelpAfterError();
+program.exitOverride();
+
 program.parseAsync().catch((error) => {
-  process.stderr.write(`${error instanceof Error ? error.message : String(error)}\n`);
+  printError(error);
   process.exit(1);
 });
